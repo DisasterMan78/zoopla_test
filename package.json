@@ -1,0 +1,14 @@
+{
+  "name": "zoopla-test",
+  "description": "Contractor technical test for zoopla.co.uk",
+  "version": "0.0.1",
+  "author": "David Benson <dmbenson1978@gmail.com>",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DisasterMan78/zoopla_test.git"
+  },
+  "dependencies": {
+    "httpdispatcher": "^2.1.0"
+  }
+}
