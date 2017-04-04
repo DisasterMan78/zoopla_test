@@ -1,7 +1,7 @@
 // features/stepdefinitions/routing.steps.js
 'use strict';
 var expect  = require('chai').expect,
-    baseUrl = 'http://localhost:8080/';
+    baseUrl = 'http://localhost:8080';
 
 module.exports = function () {
 
@@ -9,7 +9,7 @@ module.exports = function () {
 
      // "([^"]*)" is lazy Regex, * matches anything including no string
      // Use + (plus) instead of * (asterisk) to ensure there is one or more character
-    this.Given(/^I enter "([^"]+)" as the URL path$/, function (path) {
+    this.Given(/^I visit "([^"]+)" page$/, function (path) {
         return this.driver.get(baseUrl + path);
     });
 

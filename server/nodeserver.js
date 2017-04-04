@@ -37,6 +37,15 @@
         response.render('search', data);
     });
 
+    // GET /results
+    app.get('/results', function (request, response) {
+
+        console.log('Get request to /results - redirect to /search');
+
+        response.writeHead(301, { Location: '/search' });
+        response.end();
+    });
+
     // POST /results
     app.post('/results', function (request, response) {
 

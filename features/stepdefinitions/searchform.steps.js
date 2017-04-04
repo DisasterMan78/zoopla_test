@@ -7,31 +7,43 @@ module.exports = function () {
 
     this.World = require('../support/world.js').World;
 
-    this.Then(/^there should be a Zoopla search form$/, function () {
-        var selector = 'form[id="zoopla-search-form"]';
+
+    this.Then(/^I am presented with a "([^"]+)" "([^"]+)"$/, function (type, element) {
+
+        var attribute,
+            selector;
+
+        // Expandable to allow any element type to be identified by corresponding attribute
+        switch(element) {
+            case 'input':
+                attribute = 'name';
+                break;
+            case 'button':
+                attribute = 'type';
+                break;
+        }
+
+        selector = element + '[' + attribute + '="' + type + '"]';
 
         this.waitFor(selector);
 
         return this.driver.findElement({ css: selector});
     });
 
-    this.Then(/^the form should have a "([^"]+)" field$/, function (name) {
+
+    this.Given(/^I enter "([^"]+)" into "([^"]+)" field$/, function (value, name) {
+
         var selector = 'input[name="' + name + '"]';
 
         this.waitFor(selector);
 
-        return this.driver.findElement({ css: selector});
+        return this.driver.findElement({ css: selector}).sendKeys(value);
+
     });
 
-    this.Then(/^the form should have a "([^"]+)" button$/, function (type) {
-        var selector = 'button[type="' + type + '"]';
 
-        this.waitFor(selector);
+    this.Then(/^I submit search query$/, function () {
 
-        return this.driver.findElement({ css: selector});
-    });
-
-    this.Given(/^I submit the search form$/, function () {
         var selector = '#zoopla-search-form--button__submit';
 
         this.waitFor(selector);
@@ -40,14 +52,44 @@ module.exports = function () {
 
     });
 
-    this.Then(/^the page should display the results$/, function () {
 
-        var selector = '#zoopla-results #zoopla-results--row';
+    // Checks page content as well as the page slug
+    this.Given(/^I am presented with "([^"]+)" page$/, function (name) {
+
+        var selector = '#zoopla-results-container h1',
+            path,
+            browser = this;
 
         this.waitFor(selector);
 
-        return this.driver.findElement({ css: selector}).getText().then(function (pageText) {
-            expect(pageText).to.equal('We have results!');
+        return this.driver.findElement({ css: selector}).then(function () {
+
+            return browser.driver.getCurrentUrl().then(function (path) {
+
+                path = path.replace(baseUrl, '');
+
+                expect(path).to.equal(name);
+            });
+        });
+
+    });
+
+
+    this.Then(/^the page shows ordered list of results$/, function () {
+
+        var selector = 'ol#zoopla-search-results',
+            browser = this;
+
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector}).then(function () {
+            var selector = 'li.zoopla-results-item';
+
+            browser.waitFor(selector);
+
+            return browser.driver.findElements({ css: selector}).then(function (elements) {
+                expect(elements.length).to.be.above(0);
+            });
         });
     });
 
