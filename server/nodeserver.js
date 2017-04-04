@@ -5,6 +5,7 @@
     var http           = require('http'),
         handlebars     = require('handlebars'),
         path           = require('path'),
+        fs             = require('fs'),
         express        = require('express'),
         app            = express(),
         exphbs         = require('express-handlebars'),
@@ -21,7 +22,7 @@
     const PORT = 8080;
 
     app.set('port', PORT);
-    app.use(express.static(path.join(__dirname, 'assets'), expressOptions ));
+    app.use(express.static('assets'));
 
     // GET /search
     app.get('/search', function (request, response) {
@@ -39,14 +40,24 @@
     // POST /results
     app.post('/results', function (request, response) {
 
-        var data = {
+        var data   = {
             title: 'Zoopla Test: Results',
             requestUrl: request.url
-        };
+        },
+        resultJson = null;
 
         console.log('Request: ' + request.url);
 
-        response.render('results', data);
+        readJSONFile('server/data.json', function (error, json) {
+            if(error) {
+                response.send({ error: 'Not found' });
+                throw error;
+            }
+            console.log('json file found');
+
+            response.setHeader('Content-Type', 'application/json');
+            response.send(json);
+        });
     });
 
     app.use(function(request, response, next){
@@ -73,4 +84,18 @@
         console.log('Hello express started on http://localhost:' +
         app.get('port') + '; press Ctrl-C to terminate.' );
     });
+
+    function readJSONFile(filename, callback) {
+      fs.readFile(filename, function (err, data) {
+        if(err) {
+          callback(err);
+          return;
+        }
+        try {
+          callback(null, JSON.parse(data));
+        } catch(exception) {
+          callback(exception);
+        }
+      });
+    }
 })();
