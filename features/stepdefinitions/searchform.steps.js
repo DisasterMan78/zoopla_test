@@ -31,4 +31,21 @@ module.exports = function () {
         return this.driver.findElement({ css: selector});
     });
 
+    this.Given(/^I submit the search form$/, function () {
+        var selector = 'button[type="submit"]';
+
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector}).click();
+
+    });
+
+    this.Then(/^I should be taken to the results page$/, function () {
+        var selector = '#results';
+
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector});
+    });
+
 };
