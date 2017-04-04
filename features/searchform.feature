@@ -8,4 +8,4 @@ Feature: Application needs to display search form
 
     Scenario: Submit search form
         Given I submit the search form
-        Then I should be taken to the results page
+        Then the page should display the results

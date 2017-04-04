@@ -32,7 +32,7 @@ module.exports = function () {
     });
 
     this.Given(/^I submit the search form$/, function () {
-        var selector = 'button[type="submit"]';
+        var selector = '#zoopla-search-form--button__submit';
 
         this.waitFor(selector);
 
@@ -40,12 +40,15 @@ module.exports = function () {
 
     });
 
-    this.Then(/^I should be taken to the results page$/, function () {
-        var selector = '#results';
+    this.Then(/^the page should display the results$/, function () {
+
+        var selector = '#zoopla-results #zoopla-results--row';
 
         this.waitFor(selector);
 
-        return this.driver.findElement({ css: selector});
+        return this.driver.findElement({ css: selector}).getText().then(function (pageText) {
+            expect(pageText).to.equal('We have results!');
+        });
     });
 
 };
