@@ -7,19 +7,23 @@ module.exports = function () {
 
     this.World = require('../support/world.js').World;
 
-    this.Given(/^I enter "([^"]*)" as the URL path$/, function (path) {
+     // "([^"]*)" is lazy Regex, * matches anything including no string
+     // Use + (plus) instead of * (asterisk) to ensure there is one or more character
+    this.Given(/^I enter "([^"]+)" as the URL path$/, function (path) {
         return this.driver.get(baseUrl + path);
     });
 
-    this.Then(/^the page should display the text "([^"]*)"$/, function (text) {
-        this.waitFor('#http-error');
+    this.Then(/^the page should display the text "([^"]+)"$/, function (text) {
+        var selector = '#http-error';
 
-        return this.driver.findElement({ css: '#http-error'}).getText().then(function (pageText) {
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector}).getText().then(function (pageText) {
             expect(pageText).to.equal(text);
         });
     });
 
-    this.Then(/^the page title should be "([^"]*)"$/, function (text) {
+    this.Then(/^the page title should be "([^"]+)"$/, function (text) {
         this.waitFor('title');
 
         return this.driver.getTitle().then(function (title) {
