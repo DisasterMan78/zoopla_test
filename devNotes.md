@@ -12,3 +12,5 @@ https://github.com/Matt-B/cucumber-js-selenium-webdriver-example
 
 Install Chromedriver from http://chromedriver.storage.googleapis.com/index.html
 Be sure to add path to chromedrive file to your PATH variable
+
+Express used to enable full HTML templates - 'vanilla' Node with handlebars wouldn't play nicely

@@ -7,8 +7,8 @@ module.exports = function () {
 
     this.World = require('../support/world.js').World;
 
-    this.Given(/^I enter an invalid path in browser's address bar$/, function () {
-        return this.driver.get(baseUrl + 'invalid');
+    this.Given(/^I enter "([^"]*)" as the URL path$/, function (path) {
+        return this.driver.get(baseUrl + path);
     });
 
     this.Then(/^the page should display the text "([^"]*)"$/, function (text) {
@@ -17,10 +17,6 @@ module.exports = function () {
         return this.driver.findElement({ css: '#http-error'}).getText().then(function (pageText) {
             expect(pageText).to.equal(text);
         });
-    });
-
-    this.Given(/^I enter "([^"]*)" as the URL path$/, function (path) {
-        return this.driver.get(baseUrl + path);
     });
 
     this.Then(/^the page title should be "([^"]*)"$/, function (text) {
