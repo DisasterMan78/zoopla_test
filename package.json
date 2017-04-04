@@ -9,8 +9,9 @@
     "url": "git://github.com/DisasterMan78/zoopla_test.git"
   },
   "dependencies": {
-    "handlebars": "^4.0.6",
-    "httpdispatcher": "^2.1.0"
+    "express": "^4.15.2",
+    "express-handlebars": "^3.0.0",
+    "handlebars": "^4.0.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -3,19 +3,28 @@
 
     // Import modules
     var http           = require('http'),
-        httpdispatcher = require('httpdispatcher'),
-        dispatcher     = new httpdispatcher(),
         handlebars     = require('handlebars'),
-        fs             = require('fs');
+        path           = require('path'),
+        express        = require('express'),
+        app            = express(),
+        exphbs         = require('express-handlebars'),
+        expressOptions = {
+            dotfiles   : 'ignore',
+            extensions : ['html'],
+            index      : false
+        };
+
+    app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+    app.set('view engine', 'handlebars');
 
     // Define listen port
     const PORT = 8080;
 
-    // Set asset dir
-    dispatcher.setStatic('assets');
+    app.set('port', PORT);
+    app.use(express.static(path.join(__dirname, 'assets'), expressOptions ));
 
     // GET /search
-    dispatcher.onGet('/search', function (request, response) {
+    app.get('/search', function (request, response) {
 
         var data = {
             title: 'Zoopla Test: Search',
@@ -24,54 +33,44 @@
 
         console.log('Request: ' + request.url);
 
-        fs.readFile('templates/_search.html', 'utf-8', function(error, source){
-            var template = handlebars.compile(source),
-                html     = template(data);
-
-            response.writeHead(200, {
-                'Content-Type' : 'text/plain',
-                'title'        : 'Zoopla Test: Search'
-            });
-            response.end(html);
-        });
+        response.render('search', data);
     });
 
     // POST /results
-    dispatcher.onPost('/results', function (request, response) {
+    app.post('/results', function (request, response) {
+
+        var data = {
+            title: 'Zoopla Test: Results',
+            requestUrl: request.url
+        };
+
         console.log('Request: ' + request.url);
 
-        response.writeHead(200, {'Content-Type': 'text/plain'});
-        response.end(
-            '<html><head><title>Zoopla Test: Results</title></head>' +
-            '<body>Request: ' + request.url + '</body></html>'
-        );
+        response.render('results', data);
     });
 
-    dispatcher.onError(function (request, response) {
-        console.log('No request handler found for ' + request.url);
+    app.use(function(request, response, next){
+        response.status(404);
 
-        response.writeHead(404);
-        response.end('<div id="http-error">Requested page not found</div>');
-    });
-
-    // Request handler
-    function handleRequest(request, response) {
-        try {
-            // Log request
-            console.log(request.url);
-            // Disptach
-            dispatcher.dispatch(request, response);
-        } catch (err) {
-            console.log(err);
+        // respond with html page
+        if (request.accepts('html')) {
+            response.render('404', { url: request.url });
+            return;
         }
-    }
 
-    // Create server
-    var server = http.createServer(handleRequest);
+        // respond with json
+        if (request.accepts('json')) {
+            response.send({ error: 'Not found' });
+            return;
+        }
+
+        // default to plain-text. send()
+        response.type('txt').send('Not found');
+    });
 
     // Start server
-    server.listen(PORT, function () {
-        //Callback triggered when server listening.
-        console.log('Server listening on: http://localhost:%s', PORT);
+    app.listen(app.get('port'), function () {
+        console.log('Hello express started on http://localhost:' +
+        app.get('port') + '; press Ctrl-C to terminate.' );
     });
 })();
