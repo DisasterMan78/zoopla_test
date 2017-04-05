@@ -1,15 +1,5 @@
 Feature: Users need to be able to search for area by postcode
 
-    # Scenario: Show search form
-    #     Given I enter "search" as the URL path
-    #     Then there should be a Zoopla search form
-    #         And the form should have a "search" field
-    #         And the form should have a "submit" button
-
-    # Scenario: Submit search form
-    #     Given I submit the search form
-    #     Then the page should display the results
-
     Scenario: Search page is displayed
         # A user's intention can not be tested - only actions
         # Given I want to search for properties on the website
@@ -40,17 +30,16 @@ Feature: Users need to be able to search for area by postcode
             And each result contains "property-price"
             And each result contains "property-description"
             # Did someone get bored? These need breaking up
+            # And each result contains agent data consisting of "agent logo", "agent name", "agent address" and "agent phone number"
             And each result contains "agent-logo"
             And each result contains "agent-name"
             And each result contains "agent-address"
             And each result contains "agent-phonenumber"
 
-    # Scenario: Search for an area for which there are no results
-    #     Given search page is rendered
-    #         And search field is present
-    #         And submit button is present
-    #     When I enter "SE1" to search field
-    #         And I submit search query
-    #     Then search page returns message "No results found"
-    #         And search search field is shown
-    #         And submit button is shown
+    Scenario: Search for an area for which there are no results
+        Given I visit "/search" page
+            And I enter "SE1" into "search" field
+            And I submit search query
+        Then search page returns message "No results found"
+            And I am presented with a "search" "input"
+            And I am presented with a "submit" "button"

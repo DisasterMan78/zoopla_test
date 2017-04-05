@@ -4,22 +4,23 @@
     var loadFile,
         searchSuccess,
         searchError,
-        showResults,
-        templates,
         indexObject,
         addOutPutFilters,
         formatPrice,
         listingsTemplate,
+        searchVisibility,
         searchButton = document.getElementById('zoopla-search-form--button__submit');
 
 
-    loadFile = function (file, onSuccess, onError, method) {
+    loadFile = function (file, data, onSuccess, onError, method) {
 
         var xhr        = new XMLHttpRequest(),
             errorFunc  = onError || function () {},
             loadMethod = method || 'GET';
 
         xhr.open(loadMethod, file, true);
+
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         xhr.onreadystatechange = function () {
 
@@ -41,7 +42,7 @@
 
         };
 
-        xhr.send(null);
+        xhr.send(data);
 
     };
 
@@ -49,18 +50,30 @@
     searchSuccess = function (xhr) {
 
         var results,
+            container,
             contentType = xhr.getResponseHeader('content-type');
 
         contentType = contentType.substr(0, contentType.indexOf(';'));
 
-        window.history.pushState({pageTitle: 'Zoopla Test: Results'},'', '/results');
-
         if(contentType == 'application/json') {
             results = JSON.parse(xhr.response);
 
-            results.listing = indexObject(results.listing);
+            container = document.getElementById("zoopla-results-container");
 
-            showResults(results);
+            if(results.listing.length > 0) {
+                searchVisibility(false);
+
+                results.listing = indexObject(results.listing);
+
+                results.listing = addOutPutFilters(results.listing);
+
+                window.history.pushState({pageTitle: 'Zoopla Test: Results'},'', '/results');
+            } else {
+                results.result_count = 'No';
+            }
+
+            container.innerHTML = Mustache.render(listingsTemplate, results);
+
 console.log(results);
         } else {
 console.log('invalid content-type');
@@ -69,24 +82,19 @@ console.log('invalid content-type');
 
 
     searchError = function (xhr) {
-
-    };
-
-
-    showResults = function (results) {
-
-        var container = document.getElementById("zoopla-results-container");
-
-        container.innerHTML = Mustache.render(listingsTemplate, results);
+console.log(xhr.status);
     };
 
     searchButton.addEventListener('click', function (event) {
 
         event.preventDefault();
 
-        loadFile('/results', searchSuccess, searchError, 'POST');
+        var searchValue = document.getElementById("zoopla-search-form--input__search").value;
+
+        loadFile('/results', 'search=' + searchValue, searchSuccess, searchError, 'POST');
 
     }, false);
+
 
     indexObject = function (object) {
         var i;
@@ -97,6 +105,7 @@ console.log('invalid content-type');
 
         return object;
     };
+
 
     addOutPutFilters = function (object) {
         var i;
@@ -110,16 +119,25 @@ console.log('invalid content-type');
         }
 
         return object;
-    }
+    };
 
 
     formatPrice = function (price) {
         return '£' + parseInt(price, 10).formatMoney(0);
+    };
+
+
+    searchVisibility = function (visibility) {
+        var searchForm = document.getElementById('zoopla-search-form');
+        if(visibility) {
+            searchForm.style.display = 'block';
+        } else {
+            searchForm.style.display = 'none';
+        }
     }
 
 
     listingsTemplate = `
-    <h1>Zoopla Test: Search Results</h1>
     <h4 id="zoopla-results--count">{{result_count}} results found</h4>
     <ol id="zoopla-search-results">
         {{#listing}}<li id="results-item-{{index}}" class="zoopla-results-item">

@@ -9,6 +9,7 @@
         express        = require('express'),
         app            = express(),
         exphbs         = require('express-handlebars'),
+        bodyParser     = require('body-parser'),
         expressOptions = {
             dotfiles   : 'ignore',
             extensions : ['html'],
@@ -24,12 +25,17 @@
     app.set('port', PORT);
     app.use(express.static('assets'));
 
+    app.use(bodyParser.urlencoded({
+        extended : true
+    }));
+
+
     // GET /search
     app.get('/search', function (request, response) {
 
         var data = {
-            title: 'Zoopla Test: Search',
-            requestUrl: request.url
+            title      : 'Zoopla Test: Search',
+            requestUrl : request.url
         };
 
         console.log('Request: ' + request.url);
@@ -37,56 +43,66 @@
         response.render('search', data);
     });
 
+
     // GET /results
     app.get('/results', function (request, response) {
 
         console.log('Get request to /results - redirect to /search');
 
-        response.writeHead(301, { Location: '/search' });
+        response.writeHead(301, { Location : '/search' });
         response.end();
     });
+
 
     // POST /results
     app.post('/results', function (request, response) {
 
-        var data   = {
-            title: 'Zoopla Test: Results',
-            requestUrl: request.url
-        },
-        resultJson = null;
+        var resultJson = null;
 
-        console.log('Request: ' + request.url);
+        response.setHeader('Content-Type', 'application/json');
 
-        readJSONFile('server/data.json', function (error, json) {
-            if(error) {
-                response.send({ error: 'Not found' });
-                throw error;
-            }
-            console.log('json file found');
+        if(request.body.search == "N11") {
 
-            response.setHeader('Content-Type', 'application/json');
-            response.send(json);
-        });
+            console.log('Request: ' + request);
+
+            readJSONFile('server/data.json', function (error, json) {
+                if(error) {
+                    response.send({ error : 'Not found' });
+                    throw error;
+                }
+                console.log('json file found');
+                response.send(json);
+            });
+
+        } else {
+            response.send({
+                area         : request.body.search,
+                listing      : [],
+                result_count : 0
+            });
+        }
     });
+
 
     app.use(function(request, response, next){
         response.status(404);
 
         // respond with html page
         if (request.accepts('html')) {
-            response.render('404', { url: request.url });
+            response.render('404', { url : request.url });
             return;
         }
 
         // respond with json
         if (request.accepts('json')) {
-            response.send({ error: 'Not found' });
+            response.send({ error : 'Not found' });
             return;
         }
 
         // default to plain-text. send()
         response.type('txt').send('Not found');
     });
+
 
     // Start server
     app.listen(app.get('port'), function () {

@@ -56,7 +56,7 @@ module.exports = function () {
     // Checks page content as well as the page slug
     this.Given(/^I am presented with "([^"]+)" page$/, function (name) {
 
-        var selector = '#zoopla-results-container h1',
+        var selector = '#zoopla-results--count',
             path,
             browser = this;
 
@@ -119,5 +119,17 @@ module.exports = function () {
             expect(elements.length).to.equal(5);
         });
     });
+
+
+    this.Then(/^search page returns message "([^"]+)"$/, function (message) {
+
+        var selector = '#zoopla-results--count';
+
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector}).getText().then(function (text) {
+            expect(text).to.equal(message);
+        });
+    })
 
 };
