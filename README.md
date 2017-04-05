@@ -1,3 +1,5 @@
+These are the notes that came with the test - for development notes please refer to [devNotes.md](https://github.com/DisasterMan78/zoopla_test/blob/master/devNotes.md)
+
 # Developer test
 Create simple Node.js based application that simulates simple search for an area and displays search results.
 &nbsp;
@@ -113,4 +115,4 @@ Feature: Search results page needs to be responsive and support 3 different view
 ```
 
 ## Final notes
-Please let us know if you liked the test and how long it took you to complete it. 
+Please let us know if you liked the test and how long it took you to complete it.
