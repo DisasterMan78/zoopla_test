@@ -93,4 +93,31 @@ module.exports = function () {
         });
     });
 
+
+    this.Then(/^page shows number of results found$/, function () {
+
+        var selector = '#zoopla-results--count';
+
+        this.waitFor(selector);
+
+        return this.driver.findElement({ css: selector}).getText().then(function (text) {
+            expect(text).to.match(/^(\d+) results found$/);
+        });
+
+    });
+
+
+    this.Then(/^each result contains "([^"]+)"$/, function (contentClass) {
+
+        var selector = '.' + contentClass,
+            browser = this;
+
+        this.waitFor(selector);
+
+        return this.driver.findElements({ css: selector}).then(function (elements) {
+
+            expect(elements.length).to.equal(5);
+        });
+    });
+
 };

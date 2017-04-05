@@ -10,10 +10,14 @@ module.exports = function () {
      // "([^"]*)" is lazy Regex, * matches anything including no string
      // Use + (plus) instead of * (asterisk) to ensure there is one or more character
     this.Given(/^I visit "([^"]+)" page$/, function (path) {
+
         return this.driver.get(baseUrl + path);
+
     });
 
+
     this.Then(/^the page should display the text "([^"]+)"$/, function (text) {
+
         var selector = '#http-error';
 
         this.waitFor(selector);
@@ -23,7 +27,9 @@ module.exports = function () {
         });
     });
 
+
     this.Then(/^the page title should be "([^"]+)"$/, function (text) {
+
         this.waitFor('title');
 
         return this.driver.getTitle().then(function (title) {

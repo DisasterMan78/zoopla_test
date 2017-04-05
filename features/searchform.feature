@@ -34,11 +34,11 @@ Feature: Users need to be able to search for area by postcode
         # Then I am presented with "results" page showing ordered list of results
         Then I am presented with "results" page
             And the page shows ordered list of results
-        #     And page shows '"number of results" found'
-        #     And each result contains "property image"
-        #     And each result contains "property title"
-        #     And each result contains "property price"
-        #     And each result contains "property description"
+            And page shows number of results found
+            And each result contains "property-image"
+            And each result contains "property-title"
+            And each result contains "property-price"
+            And each result contains "property-description"
         #     And each result contains agent data consisting of "agent logo", "agent name", "agent address" and "agent phone number"
 
     # Scenario: Search for an area for which there are no results
