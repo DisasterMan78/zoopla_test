@@ -40,6 +40,8 @@
 
         console.log('Request: ' + request.url);
 
+        response = securityHeaders(response);
+
         response.render('search', data);
     });
 
@@ -60,6 +62,7 @@
         var resultJson = null;
 
         response.setHeader('Content-Type', 'application/json');
+        response = securityHeaders(response);
 
         if(request.body.search == "N11") {
 
@@ -110,6 +113,7 @@
         app.get('port') + '; press Ctrl-C to terminate.' );
     });
 
+
     function readJSONFile(filename, callback) {
       fs.readFile(filename, function (err, data) {
         if(err) {
@@ -122,5 +126,18 @@
           callback(exception);
         }
       });
+    }
+
+
+    function securityHeaders(response){
+        response.setHeader('Content-Security-Policy',"script-src 'self'");
+        response.setHeader('X-XSS-Protection','1;mode=block');
+        response.setHeader('X-Frame-Options','SAMEORIGIN');
+        response.setHeader('X-Content-Type-Options','nosniff');
+        // HTTPS only
+        // ALWAYS ensure HTTPS is working before implementing 'preload'.
+        // response.setHeader('Strict-Transport-Security','max-age=31536000; includeSubDomains; preload');
+
+        return response;
     }
 })();

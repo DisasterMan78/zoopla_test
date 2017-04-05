@@ -2,13 +2,13 @@
     'use strict';
 
     var loadFile,
-        searchSuccess,
-        searchError,
+        onResultsReceived,
+        onSearchError,
         indexObject,
         addOutPutFilters,
         formatPrice,
         listingsTemplate,
-        searchVisibility,
+        setSearchVisibility,
         searchButton = document.getElementById('zoopla-search-form--button__submit');
 
 
@@ -20,7 +20,7 @@
 
         xhr.open(loadMethod, file, true);
 
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
         xhr.onreadystatechange = function () {
 
@@ -33,7 +33,7 @@
             }
 
             if (xhr.readyState == 4) {
-                if (xhr.status == "200") {
+                if (xhr.status == '200') {
                     onSuccess(xhr);
                 } else {
                     onError(xhr);
@@ -47,7 +47,7 @@
     };
 
 
-    searchSuccess = function (xhr) {
+    onResultsReceived = function (xhr) {
 
         var results,
             container,
@@ -58,10 +58,10 @@
         if(contentType == 'application/json') {
             results = JSON.parse(xhr.response);
 
-            container = document.getElementById("zoopla-results-container");
+            container = document.getElementById('zoopla-results-container');
 
             if(results.listing.length > 0) {
-                searchVisibility(false);
+                setSearchVisibility(false);
 
                 results.listing = indexObject(results.listing);
 
@@ -74,14 +74,25 @@
 
             container.innerHTML = Mustache.render(listingsTemplate, results);
 
-console.log(results);
+            if(results.result_count == 'No') {
+                // This is SO damn lazy, but it fulfils the requirements. I'd rather gouge my eyes out than do this in production
+                var count = document.getElementById('zoopla-results--count'),
+                    label = document.getElementById('zoopla-search-form--label');
+
+                count.className = 'zoopla-results--count__no-results';
+                label.className = 'zoopla-search-form--label__no-results';
+                label.innerHTML = 'Enter another location and search again.';
+            }
+
         } else {
+            // TODO
 console.log('invalid content-type');
         }
     };
 
 
-    searchError = function (xhr) {
+    onSearchError = function (xhr) {
+        // TODO
 console.log(xhr.status);
     };
 
@@ -89,9 +100,9 @@ console.log(xhr.status);
 
         event.preventDefault();
 
-        var searchValue = document.getElementById("zoopla-search-form--input__search").value;
+        var searchValue = document.getElementById('zoopla-search-form--input__search').value;
 
-        loadFile('/results', 'search=' + searchValue, searchSuccess, searchError, 'POST');
+        loadFile('/results', 'search=' + searchValue, onResultsReceived, onSearchError, 'POST');
 
     }, false);
 
@@ -127,7 +138,7 @@ console.log(xhr.status);
     };
 
 
-    searchVisibility = function (visibility) {
+    setSearchVisibility = function (visibility) {
         var searchForm = document.getElementById('zoopla-search-form');
         if(visibility) {
             searchForm.style.display = 'block';
@@ -145,7 +156,7 @@ console.log(xhr.status);
                 <img class="property-image" src="{{image_url}}" />
             </div>{{/image_url}}
             <div class="results-item--details">
-                {{#property_type}}<h3 class="property-title">{{num_bedrooms}} bed {{property_type}}</h3>{{/property_type}}
+                {{#property_type}}<h3 class="property-title">{{num_bedrooms}} bed {{property_type}} for sale</h3>{{/property_type}}
                 {{#price}}<h4 class="property-price">{{#formatPrice}}{{price}}{{/formatPrice}}</h4>{{/price}}
                 {{#description}}<p class="property-description">{{description}}</p>{{/description}}
             </div>
@@ -162,11 +173,11 @@ console.log(xhr.status);
     Number.prototype.formatMoney = function(decimalPlaces, decimalPoint, thousandSeparator){
         var n = this,
             c = isNaN(decimalPlaces = Math.abs(decimalPlaces)) ? 2 : decimalPlaces,
-            d = decimalPoint ||  ".",
-            t = thousandSeparator || ",",
-            s = n < 0 ? "-" : "",
+            d = decimalPoint ||  '.',
+            t = thousandSeparator || ',',
+            s = n < 0 ? '-' : '',
             i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
             j = (j = i.length) > 3 ? j % 3 : 0;
-       return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+       return s + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
      };
  })();

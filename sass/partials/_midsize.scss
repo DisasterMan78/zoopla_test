@@ -1,0 +1,61 @@
+@media (min-width: 770px) {
+
+    body{
+        margin: 1.5em;
+    }
+
+    #zoopla-results--count{
+        padding-bottom: 0.375rem;
+    }
+
+    #zoopla-search-form--label,
+    #zoopla-results--count,
+    .results-item--image,
+    .results-item--details{
+        margin-bottom: 1.5rem;
+    }
+
+    #zoopla-search-results{
+        padding-top: 0;
+    }
+
+    .zoopla-results-item{
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        align-content: flex-start;
+        margin-bottom: 3rem;
+    }
+
+    .results-item--image,
+    .results-item--details{
+        flex: 50%;
+    }
+
+    .results-item--image{
+        padding-right: 0.75rem;
+    }
+
+    .results-item--details{
+        padding-left: 0.75rem;
+    }
+
+    .results-item--agent{
+        flex: 100%;
+    }
+
+    .results-item--agent{
+        margin-top: 0;
+
+        & > * {
+            float: left;
+            margin-right: 1.25rem;
+            margin-top: 1rem;
+
+            &:last-child{
+                margin-right: 0;
+            }
+        }
+    }
+
+}
