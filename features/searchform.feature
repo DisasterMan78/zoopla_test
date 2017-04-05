@@ -39,7 +39,11 @@ Feature: Users need to be able to search for area by postcode
             And each result contains "property-title"
             And each result contains "property-price"
             And each result contains "property-description"
-        #     And each result contains agent data consisting of "agent logo", "agent name", "agent address" and "agent phone number"
+            # Did someone get bored? These need breaking up
+            And each result contains "agent-logo"
+            And each result contains "agent-name"
+            And each result contains "agent-address"
+            And each result contains "agent-phonenumber"
 
     # Scenario: Search for an area for which there are no results
     #     Given search page is rendered

@@ -135,7 +135,7 @@ console.log('invalid content-type');
                 {{#agent_logo}}<img class="agent-logo" src="{{agent_logo}}" />{{/agent_logo}}
                 {{#agent_name}}<h5 class="agent-name">{{agent_name}}</h4>{{/agent_name}}
                 {{#agent_address}}<p class="agent-address">{{agent_address}}{{#agent_postcode}}, {{agent_postcode}}{{/agent_postcode}}</p>{{/agent_address}}
-                {{#agent_phone}}<p class="agent-phone">T: {{agent_phone}}</p>{{/agent_phone}}
+                {{#agent_phone}}<p class="agent-phonenumber">T: {{agent_phone}}</p>{{/agent_phone}}
             </div>
         </li>{{/listing}}
     </ol>`;
