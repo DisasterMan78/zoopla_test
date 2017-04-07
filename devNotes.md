@@ -13,6 +13,9 @@ https://github.com/Matt-B/cucumber-js-selenium-webdriver-example
 Install Chromedriver from http://chromedriver.storage.googleapis.com/index.html
 Be sure to add path to chromedrive file to your PATH variable
 
+Run tests:
+`node_modules/.bin/cucumber-js`
+
 Express used to enable full HTML templates - 'vanilla' Node with handlebars wouldn't play nicely
 
 Gulp and dependencies are locally installed and run to make this package portable and not interfere with any users globally installed packages.
