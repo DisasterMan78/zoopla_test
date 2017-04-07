@@ -2,10 +2,7 @@
     'use strict';
 
     // Import modules
-    var http           = require('http'),
-        handlebars     = require('handlebars'),
-        path           = require('path'),
-        fs             = require('fs'),
+    var fs             = require('fs'),
         express        = require('express'),
         app            = express(),
         exphbs         = require('express-handlebars'),
